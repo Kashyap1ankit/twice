@@ -75,16 +75,17 @@ const App = () => {
   }, []);
 
   // Get route path from current URL
+  // Get route path from current URL (maps web path → app path)
   const getRoutePath = () => {
     const currentPath = window.location.pathname;
 
     if (currentPath.includes("/share/profile/")) {
       const profileId = currentPath.split("/").pop();
-      return `share/profile/${profileId}`;
+      return `wallet/${profileId}`; // ✅ goes to /wallet/123
     } else if (currentPath.includes("/share/forget")) {
-      return "share/forget";
+      return "forget"; // ✅ goes to /forget
     }
-    return "";
+    return ""; // ✅ normal open (index.ts)
   };
 
   // Build deep links
