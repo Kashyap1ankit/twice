@@ -88,6 +88,50 @@ const App = () => {
     return ""; // ✅ normal open (index.ts)
   };
 
+  // Open app with a specific route
+  const openWithRoute = (routePath) => {
+    const devServerUrl = `http://${CONFIG.DEV_SERVER_IP}:${CONFIG.DEV_SERVER_PORT}`;
+    const encodedDevUrl = encodeURIComponent(devServerUrl);
+
+    const devDeepLink = `exp+${
+      CONFIG.APP_SLUG
+    }://expo-development-client/?url=${encodedDevUrl}${
+      routePath ? "/--/" + routePath : ""
+    }`;
+
+    const prodDeepLink = `${CONFIG.APP_SCHEME}://${routePath}`;
+
+    setStatus(`Opening Twice app at /${routePath || "index"}...`);
+
+    if (platform.isIOS) {
+      window.location.href = devDeepLink;
+
+      setTimeout(() => {
+        window.location.href = prodDeepLink;
+      }, 1000);
+
+      setTimeout(() => {
+        setStatus("⚠️ App not opening? Try the download button below");
+      }, 3000);
+    } else if (platform.isAndroid) {
+      const intentUrl = `intent://${
+        devDeepLink.split("://")[1]
+      }#Intent;scheme=exp+${
+        CONFIG.APP_SLUG
+      };S.browser_fallback_url=${encodeURIComponent(window.location.href)};end`;
+
+      try {
+        window.location.href = intentUrl;
+      } catch {
+        window.location.href = devDeepLink;
+      }
+
+      setTimeout(() => {
+        setStatus("⚠️ App not opening? Try the download button below");
+      }, 3000);
+    }
+  };
+
   // Build deep links
   const buildDeepLinks = () => {
     const routePath = getRoutePath();
@@ -186,9 +230,34 @@ const App = () => {
 
         <div className="buttons">
           {platform.isMobile && (
-            <button className="btn btn-primary" onClick={openApp}>
-              📱 Open Twice App
-            </button>
+            <>
+              <button className="btn btn-primary" onClick={openApp}>
+                📱 Open Twice App
+              </button>
+
+              <button
+                className="btn btn-primary"
+                onClick={() => openWithRoute("")}
+              >
+                🏠 Open Index
+              </button>
+
+              <button
+                className="btn btn-primary"
+                onClick={() =>
+                  openWithRoute("wallet/3d8a10b4-1ada-48e8-a60f-3f5139a76d45")
+                }
+              >
+                👤 Open Share Profile
+              </button>
+
+              <button
+                className="btn btn-primary"
+                onClick={() => openWithRoute("forget")}
+              >
+                🔑 Open Forget Password
+              </button>
+            </>
           )}
 
           {platform.isDesktop && (
