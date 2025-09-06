@@ -17,22 +17,28 @@ function openApp(routePath: string) {
   const devServerUrl = `http://${CONFIG.DEV_SERVER_IP}:${CONFIG.DEV_SERVER_PORT}`;
   const encodedDevUrl = encodeURIComponent(devServerUrl);
 
-  // Dev deep link (Expo Dev Client)
+  // ✅ Dev deep link (Expo Dev Client)
   const devDeepLink = `exp+${
     CONFIG.APP_SLUG
   }://expo-development-client/?url=${encodedDevUrl}${
     routePath ? "/--/" + routePath : ""
   }`;
 
-  // Prod deep link (published app)
-  const prodDeepLink = `${CONFIG.APP_SCHEME}://${routePath}`;
-
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isAndroid = /android/i.test(navigator.userAgent);
 
+  if (isIOS || isAndroid) {
+    // 👉 Development phase: always open Expo Dev Client
+    window.location.href = devDeepLink;
+  } else {
+    console.log("Please open this link on your mobile device");
+  }
+
+  /*
+  // 🚀 Production version (uncomment when publishing)
   if (isIOS) {
     window.location.href = devDeepLink;
-    setTimeout(() => (window.location.href = prodDeepLink), 1000);
+    setTimeout(() => (window.location.href = `${CONFIG.APP_SCHEME}://${routePath}`), 1000);
     setTimeout(() => (window.location.href = CONFIG.APP_STORE_URL), 3000);
   } else if (isAndroid) {
     const intentUrl = `intent://${devDeepLink.split("://")[1]}#Intent;scheme=${
@@ -44,18 +50,14 @@ function openApp(routePath: string) {
     } catch {
       window.location.href = devDeepLink;
     }
-  } else {
-    // Desktop → maybe show "open on phone" message
-    console.log("Please open this link on your mobile device");
   }
+  */
 }
 
 export default function RedirectApp() {
   const { id } = useParams();
   const location = useLocation();
   const [status, setStatus] = useState("Redirecting...");
-
-  console.log("id", id);
 
   useEffect(() => {
     let routePath = "";
@@ -77,13 +79,19 @@ export default function RedirectApp() {
   return (
     <div style={{ textAlign: "center", marginTop: "40px" }}>
       <h2>{status}</h2>
-      <p>If the app doesn’t open, please download from your app store.</p>
+      <p>
+        If the app doesn’t open, please make sure Expo Dev Client is installed.
+      </p>
+
+      {/* Store links are only needed in production */}
+      {/* 
       <div style={{ marginTop: "20px" }}>
         <a href={CONFIG.APP_STORE_URL} style={{ marginRight: "10px" }}>
           🍎 App Store
         </a>
         <a href={CONFIG.PLAY_STORE_URL}>🤖 Play Store</a>
       </div>
+      */}
     </div>
   );
 }
