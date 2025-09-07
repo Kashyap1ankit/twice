@@ -68,7 +68,7 @@ export default function RedirectApp() {
     } else if (location.pathname.startsWith("/share/")) {
       routePath = `explore/card/${id}`;
     } else if (location.pathname.startsWith("/forget/")) {
-      routePath = `forget/${id}`;
+      routePath = `/forget`;
     }
 
     setStatus(`Opening app at /${routePath || "index"}...`);
