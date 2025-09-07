@@ -66,7 +66,7 @@ export default function RedirectApp() {
     if (location.pathname === "/") {
       routePath = ""; // index
     } else if (location.pathname.startsWith("/share/")) {
-      routePath = `wallet/card/${id}`;
+      routePath = `explore/card/${id}`;
     } else if (location.pathname.startsWith("/forget/")) {
       routePath = `forget/${id}`;
     }
