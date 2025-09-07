@@ -8,9 +8,8 @@ const CONFIG = {
   APP_SCHEME: "twice", // 👈 should match app.config.js
   APP_SLUG: "twice-expo",
   BUNDLE_ID: "com.ankur.twice",
-  APP_STORE_URL: "https://apps.apple.com/app/your-app-id",
-  PLAY_STORE_URL:
-    "https://play.google.com/store/apps/details?id=com.ankur.twice",
+  APP_STORE_URL: process.env.VITE_PUBLIC_APP_STORE_URL || "",
+  PLAY_STORE_URL: process.env.VITE_PUBLIC_PLAY_STORE_URL || "",
 };
 
 function openApp(routePath: string) {
@@ -80,17 +79,17 @@ export default function RedirectApp() {
     <div style={{ textAlign: "center", marginTop: "40px" }}>
       <h2>{status}</h2>
       <p>
-        If the app doesn’t open, make sure it’s installed or use the links
-        below.
+        If the app doesn&apos;t open, make sure it&apos;s installed or use the
+        links below.
       </p>
 
       {/* Store links (visible in production) */}
       {process.env.NODE_ENV === "production" && (
         <div style={{ marginTop: "20px" }}>
           <a href={CONFIG.APP_STORE_URL} style={{ marginRight: "10px" }}>
-            🍎 App Store
+            App Store
           </a>
-          <a href={CONFIG.PLAY_STORE_URL}>🤖 Play Store</a>
+          <a href={CONFIG.PLAY_STORE_URL}> Play Store</a>
         </div>
       )}
     </div>
