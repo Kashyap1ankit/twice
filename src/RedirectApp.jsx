@@ -8,11 +8,11 @@ const CONFIG = {
   APP_SCHEME: "twice", // 👈 should match app.config.js
   APP_SLUG: "twice-expo",
   BUNDLE_ID: "com.ankur.twice",
-  APP_STORE_URL: process.env.VITE_PUBLIC_APP_STORE_URL || "",
-  PLAY_STORE_URL: process.env.VITE_PUBLIC_PLAY_STORE_URL || "",
+  APP_STORE_URL: import.meta.env.VITE_PUBLIC_APP_STORE_URL || "",
+  PLAY_STORE_URL: import.meta.env.VITE_PUBLIC_PLAY_STORE_URL || "",
 };
 
-function openApp(routePath: string) {
+function openApp(routePath) {
   const devServerUrl = `http://${CONFIG.DEV_SERVER_IP}:${CONFIG.DEV_SERVER_PORT}`;
   const encodedDevUrl = encodeURIComponent(devServerUrl);
 
@@ -28,7 +28,7 @@ function openApp(routePath: string) {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isAndroid = /android/i.test(navigator.userAgent);
 
-  if (process.env.NODE_ENV === "development") {
+  if (import.meta.env.MODE === "development") {
     // 👉 Always open Dev Client in dev mode
     window.location.href = devDeepLink;
     return;
@@ -67,8 +67,6 @@ export default function RedirectApp() {
       routePath = ""; // index
     } else if (location.pathname.startsWith("/share/")) {
       routePath = `explore/card/${id}`;
-    } else if (location.pathname.startsWith("/forget/")) {
-      routePath = `/forget`;
     }
 
     setStatus(`Opening app at /${routePath || "index"}...`);
@@ -84,7 +82,7 @@ export default function RedirectApp() {
       </p>
 
       {/* Store links (visible in production) */}
-      {process.env.NODE_ENV === "production" && (
+      {import.meta.env.MODE === "production" && (
         <div style={{ marginTop: "20px" }}>
           <a href={CONFIG.APP_STORE_URL} style={{ marginRight: "10px" }}>
             App Store
